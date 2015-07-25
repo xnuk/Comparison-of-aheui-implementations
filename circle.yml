@@ -1,0 +1,8 @@
+machine:
+  ghc:
+    version: 7.10.1
+test:
+  override:
+    - git clone https://github.com/aheui/snippets --depth=1 -b master
+    - mv snippets/logo/ ./benchmark/
+    - sh ./haskell.sh
