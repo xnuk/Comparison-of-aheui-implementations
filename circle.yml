@@ -1,10 +1,16 @@
+general:
+  branches:
+    only:
+      - master
 machine:
   ghc:
     version: 7.10.1
+  pre:
+    - sudo apt-get install time -y
 test:
   override:
-    - mkdir testlog
     - git clone https://github.com/aheui/snippets --depth=1 -b master
-    - mv snippets/logo/ ./benchmark/
-    - sh ./haskell.sh
-    - sh ./caheui.sh
+    - which time
+    - ruby do.rb
+    - rm -rf snippets
+    - cat data.json
