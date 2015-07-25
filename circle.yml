@@ -3,6 +3,8 @@ machine:
     version: 7.10.1
 test:
   override:
+    - mkdir testlog
     - git clone https://github.com/aheui/snippets --depth=1 -b master
     - mv snippets/logo/ ./benchmark/
     - sh ./haskell.sh
+    - sh ./caheui.sh
