@@ -2,7 +2,7 @@
 
 Dir.chdir(File.dirname(__FILE__))
 
-`echo '{' > data.json`
+`echo '{"data":{' > data.json`
 
 Dir.entries('test').each do |path|
 	next if path=='.' or path=='..'
@@ -34,6 +34,8 @@ Dir.entries('test').each do |path|
 		end
 	end
 	`echo '"_":null},' >> data.json`
+	`rm ./aheui`
+	`rm time.tmp`
 end
 
-`echo '"_":null}' >> data.json`
+`echo '"_":"#{`date -Iseconds`.strip}"}}' >> data.json`
