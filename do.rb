@@ -11,7 +11,6 @@ Dir.entries('test').each do |path|
 	Dir.chdir("./#{repo}") do
 		`sh ../test/#{path}`
 	end
-	`rm ./#{repo} -rf`
 	`echo '"#{user}/#{repo}":{' >> data.json`
 	Dir.glob("snippets/**/*.out") do |testpath|
 		testpath=testpath.gsub(/\.out$/, '')
@@ -34,6 +33,7 @@ Dir.entries('test').each do |path|
 		end
 	end
 	`echo '"_":null},' >> data.json`
+	`rm ./#{repo} -rf`
 	`rm ./aheui`
 	`rm time.tmp`
 end
