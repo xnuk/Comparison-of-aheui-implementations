@@ -10,7 +10,8 @@ machine:
   python:
     version: 2.7.9
   pre:
-    - sudo apt-get install time -y
+    - sudo apt-get install time perl -y
+    - echo y | cpan
 
     - npm install stylus -g
     - npm install clean-css -g

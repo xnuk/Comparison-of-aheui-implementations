@@ -4,8 +4,6 @@ Dir.chdir(File.dirname(__FILE__))
 
 `echo '{"data":{' > data.json`
 
-$stdout.sync = true
-
 Dir.entries('test').each do |path|
 	next if path=='.' or path=='..'
 	user, repo, _=path.split(/\./, 3)
