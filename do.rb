@@ -41,7 +41,7 @@ Dir.entries('test').each do |path|
 	end
 	`echo '"_":null},' >> data.json`
 	`rm ./#{repo} -rf`
-	`rm ./aheui` if File.exist?("./aheui")
+	`rm ./aheui` if (File.exist?("./aheui") || File.symlink?("./aheui"))
 	`rm ./aheui.pre.sh` if has_pre_script
 	`rm ./aheui.post.sh` if has_post_script
 	`rm time.tmp`
