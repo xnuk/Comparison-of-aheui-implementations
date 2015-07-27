@@ -31,13 +31,10 @@ test:
     - rm ./normalize.css
     - jade -O ./data.json -o . ./index.jade
     - rm ./data.json
-    - rm ./ahmp
+    - git checkout --orphan gh-pages
+    - git reset
     - git add index.html
     - git add index.css
-    - git stash
-    - git checkout gh-pages
-    - git rm * -r
-    - git stash pop
     - git status
-    - git commit -m 'test'
+    - git commit -m 'update'
     - git push -f origin gh-pages

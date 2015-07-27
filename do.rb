@@ -9,7 +9,6 @@ $stdout.sync = true
 Dir.entries('test').each do |path|
 	next if path=='.' or path=='..'
 	user, repo, _=path.split(/\./, 3)
-	puts `ls -l`
 	puts `git clone https://github.com/#{user}/#{repo} --depth=1 -b master`
 	Dir.chdir("./#{repo}") do
 		`sh ../test/#{path}`
