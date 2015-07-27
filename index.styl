@@ -6,41 +6,42 @@ a
   color black
   &:hover
     color #5C8158
-
-#comp td, #comp th
-  width 200px
-  text-align: center
-  padding-top 5px
-  padding-bottom 5px
-#comp td
-  &.terminated
-    background-color #99C1C3
-    &:before
-      content "🚫 >2m"
-  &.fail
-    background-color #FACDD0
-    &:before
-      content "✗"
-  &.pass:before
-    content "✓ "
-#comp tr:not(:first-of-type) th:first-of-type
-  width 250px
-  text-align right
-  border-right 1px solid gray
-  padding-right 20px
-  font-weight 100
-#comp tr:first-of-type
-  position fixed
-  background-color white
-  border-bottom 1px solid black
-  th:first-of-type
+#comp
+  table-layout fixed
+  td, th
+    width 200px
+    text-align: center
+    padding-top 5px
+    padding-bottom 5px
+  td
+    &.terminated
+      background-color #99C1C3
+      &:before
+        content "🚫 >2m"
+    &.fail
+      background-color #FACDD0
+      &:before
+        content "✗"
+    &.pass:before
+      content "✓ "
+  tr:not(:first-of-type) th:first-of-type
     width 250px
-    padding-right 20px
+    text-align right
     border-right 1px solid gray
-#comp tr:nth-of-type(5n+2)
-  border-bottom 1px solid black
-#comp tr:not(:first-of-type):hover
-  background-color #FFDE99
+    padding-right 20px
+    font-weight 100
+  tr:first-of-type
+    position fixed
+    background-color white
+    border-bottom 1px solid black
+    th:first-of-type
+      width 250px
+      padding-right 20px
+      border-right 1px solid gray
+  tr:nth-of-type(5n+2)
+    border-bottom 1px solid black
+  tr:not(:first-of-type):hover
+    background-color #FFDE99
 footer
   text-align center
   padding-top 40px

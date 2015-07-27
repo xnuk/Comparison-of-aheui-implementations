@@ -4,19 +4,26 @@ Dir.chdir(File.dirname(__FILE__))
 
 `echo '{"data":{' > data.json`
 
+$stdout.sync = true
+
 Dir.entries('test').each do |path|
 	next if path=='.' or path=='..'
 	user, repo, _=path.split(/\./, 3)
-	`git clone https://github.com/#{user}/#{repo} --depth=1 -b master`
+	puts `ls -l`
+	puts `git clone https://github.com/#{user}/#{repo} --depth=1 -b master`
 	Dir.chdir("./#{repo}") do
 		`sh ../test/#{path}`
 	end
 	`echo '"#{user}/#{repo}":{' >> data.json`
+	has_pre_script=File.exist?("./aheui.pre.sh")
+	has_post_script=File.exist?("./aheui.post.sh")
 	Dir.glob("snippets/**/*.out") do |testpath|
 		testpath=testpath.gsub(/\.out$/, '')
 		inputpath="#{testpath}.in"
+		`sh ./aheui.pre.sh #{testpath}.aheui` if has_pre_script
 		output=`timeout 2m /usr/bin/time --format="%S %U" --output=time.tmp ./aheui #{testpath}.aheui #{"< #{inputpath}" if File.exist?(inputpath)}`
 		exitcode="#{$?.exitstatus}"
+		`sh ./aheui.post.sh #{testpath}.aheui` if has_post_script
 		output=output.strip
 		timestr=`cat time.tmp`
 		tp=testpath.gsub(/^snippets\//, '')
@@ -34,7 +41,9 @@ Dir.entries('test').each do |path|
 	end
 	`echo '"_":null},' >> data.json`
 	`rm ./#{repo} -rf`
-	`rm ./aheui`
+	`rm ./aheui` if File.exist?("./aheui")
+	`rm ./aheui.pre.sh` if has_pre_script
+	`rm ./aheui.post.sh` if has_post_script
 	`rm time.tmp`
 end
 

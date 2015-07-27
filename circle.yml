@@ -7,6 +7,8 @@ general:
 machine:
   ghc:
     version: 7.10.1
+  python:
+    version: 2.7.9
   pre:
     - sudo apt-get install time -y
 
@@ -29,6 +31,7 @@ test:
     - rm ./normalize.css
     - jade -O ./data.json -o . ./index.jade
     - rm ./data.json
+    - rm ./ahmp
     - git add index.html
     - git add index.css
     - git stash
