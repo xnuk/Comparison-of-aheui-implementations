@@ -16,6 +16,11 @@ space_around_operators = true
 indent_style = space
 indent_size = 2
 
-[*jade]
+[*.jade]
 indent_style = space
 indent_size = 2
+
+[*.rb]
+indent_style = space
+indent_size = 2
+space_around_operators = true
