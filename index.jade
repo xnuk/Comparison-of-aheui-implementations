@@ -26,6 +26,24 @@ table#comp
               td.terminated
             else
               td.pass=v[i].toString().replace(/(\.\d{3})\d+$/, '$1')+'s'
+
 footer
   = "Last tested on "
   time(datetime=data._)=data._
+
+script.
+  var a = document.querySelector('#comp tr')
+  var offset = a.offsetTop
+  window.onscroll = function () {
+    var x = window.pageXOffset
+    var y = window.pageYOffset
+    if(y > offset) {
+      a.style.top = "0px"
+      a.style.left = -x + "px"
+      a.style.position = "fixed"
+    } else {
+      a.style.position = "absolute"
+      a.style.top = ""
+      a.style.left = ""
+    }
+  }
