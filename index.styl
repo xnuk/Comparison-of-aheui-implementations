@@ -9,7 +9,8 @@ a
 #comp
   table-layout fixed
   td, th
-    width 200px
+    width 180px
+    min-width 180px
     text-align: center
     padding-top 5px
     padding-bottom 5px
@@ -26,6 +27,7 @@ a
       content "✓ "
   tr:not(:first-of-type) th:first-of-type
     width 250px
+    min-width 250px
     text-align right
     border-right 1px solid gray
     padding-right 20px
@@ -36,6 +38,7 @@ a
     border-bottom 1px solid black
     th:first-of-type
       width 250px
+      min-width 250px
       padding-right 20px
       border-right 1px solid gray
   tr:nth-of-type(5n+2)
