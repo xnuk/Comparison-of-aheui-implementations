@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
+require 'rake'
 require 'json'
-require 'fileutils'
+require 'time'
 
 Dir.chdir(File.dirname(__FILE__))
 
@@ -12,18 +13,18 @@ Dir.entries('test').each do |path|
   puts cmd = "git clone https://github.com/#{user}/#{repo} --depth=1 -b master"
   `#{cmd}`
   Dir.chdir(repo) do
-    `sh ../test/#{path}`
+    sh "sh ../test/#{path}"
   end
   json_item = {}
-  has_pre_script = File.exist?("./aheui.pre.sh")
-  has_post_script = File.exist?("./aheui.post.sh")
+  has_pre_script = File.exist?('aheui.pre.sh')
+  has_post_script = File.exist?('aheui.post.sh')
   Dir.glob("snippets/**/*.out") do |testpath|
     testpath = testpath.gsub(/\.out$/, '')
     inputpath = "#{testpath}.in"
-    `sh ./aheui.pre.sh #{testpath}.aheui` if has_pre_script
+    sh "sh ./aheui.pre.sh #{testpath}.aheui" if has_pre_script
     output = `timeout 2m /usr/bin/time --format="%S %U" --output=time.tmp ./aheui #{testpath}.aheui #{"< #{inputpath}" if File.exist?(inputpath)}`
     exitcode = $?.exitstatus
-    `sh ./aheui.post.sh #{testpath}.aheui` if has_post_script
+    sh "sh ./aheui.post.sh #{testpath}.aheui" if has_post_script
     timestr = File.read('time.tmp')
     tp = testpath.gsub(/^snippets\//, '')
     if timestr.empty?
@@ -40,12 +41,12 @@ Dir.entries('test').each do |path|
   end
   json_item['_'] = nil
   data["#{user}/#{repo}"] = json_item
-  FileUtils.rm_rf(repo)
+  rm_rf repo
   File.delete('aheui') if File.exist?('aheui') || File.symlink?('aheui')
   File.delete('aheui.pre.sh') if has_pre_script
   File.delete('aheui.post.sh') if has_post_script
   File.delete('time.tmp')
 end
-data['_'] = `date -Iseconds`.strip
+data['_'] = Time.now.utc.iso8601
 
 File.open('data.json', 'w') { |f| f.write(json.to_json) }
