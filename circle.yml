@@ -9,6 +9,8 @@ machine:
     version: 7.10.1
   python:
     version: 2.7.9
+  ruby:
+    version: 2.2
   pre:
     - sudo apt-get install time perl -y
     - echo y | cpan
