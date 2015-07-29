@@ -7,13 +7,12 @@ Dir.chdir(File.dirname(__FILE__))
 
 json = { data: {} }
 data = json[:data]
-Dir.entries('test').each do |path|
-  next if path == '.' or path == '..'
-  user, repo, _ = path.split('.')
+Dir.glob('test/*.sh').each do |path|
+  user, repo, _ = File.basename(path).split('.')
   puts cmd = "git clone https://github.com/#{user}/#{repo} --depth=1 -b master"
   `#{cmd}`
   Dir.chdir(repo) do
-    sh "sh ../test/#{path}"
+    sh "sh ../#{path}"
   end
   json_item = {}
   has_pre_script = File.exist?('aheui.pre.sh')
