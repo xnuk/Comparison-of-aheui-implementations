@@ -29,7 +29,7 @@ Dir.entries('test').each do |path|
     if timestr.empty?
       puts "Terminated #{tp}"
       json_item[tp] = true
-    elsif File.exist?("#{testpath}.exitcode") and File.read("#{testpath}.exitcode").to_i != exitcode or File.read("#{testpath}.out").strip != output.strip
+    elsif File.exist?("#{testpath}.exitcode") and File.read("#{testpath}.exitcode").to_i != exitcode or File.read("#{testpath}.out").strip != output.encode('UTF-8', :invalid => :replace).strip
       puts "Fail #{tp}"
       json_item[tp] = false
     else
