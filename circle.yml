@@ -13,7 +13,11 @@ machine:
     version: 2.2.2
   node:
     version: iojs-v1.3.0
-  post:
+  pre:
+    - git config --global user.email "admin@xnu.kr"
+    - git config --global user.name "Xnuk Shuman"
+dependencies:
+  pre:
     - sudo apt-get install time perl -y
     - echo y | cpan
 
@@ -22,9 +26,6 @@ machine:
     - npm install stylus -g
     - npm install clean-css -g
     - npm install jade -g
-
-    - git config --global user.email "admin@xnu.kr"
-    - git config --global user.name "Xnuk Shuman"
 test:
   override:
     - git clone https://github.com/aheui/snippets --depth=1 -b master
