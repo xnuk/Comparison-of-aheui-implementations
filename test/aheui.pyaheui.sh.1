@@ -1,4 +1,5 @@
 # description cpython
+DIR="$(pwd -P)"
+TEST_ROOT=../../../
 pyenv global 2.7.9
-cd ..
-ln -s pyaheui/esotope-aheui aheui
+ln -s "$DIR/esotope-aheui" "$TEST_ROOT/aheui"

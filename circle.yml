@@ -16,6 +16,9 @@ machine:
   pre:
     - git config --global user.email "admin@xnu.kr"
     - git config --global user.name "Xnuk Shuman"
+checkout:
+  post:
+    - git submodule update --init --depth 1
 dependencies:
   pre:
     - sudo apt-get install time perl -y
@@ -28,14 +31,12 @@ dependencies:
     - npm install jade -g
 test:
   override:
-    - git clone https://github.com/aheui/snippets --depth=1 -b master
     - ruby do.rb
     - cat ./data.json
 deployment:
   upload:
     branch: master
     commands:
-      - rm -rf snippets
       - curl --get https://necolas.github.io/normalize.css/latest/normalize.css > ./normalize.css
       - stylus -o ./index.o.css ./index.styl
       - cat ./normalize.css ./index.o.css | cleancss -o ./index.css

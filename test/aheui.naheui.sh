@@ -1,3 +1,4 @@
+DIR="$(pwd -P)"
+TEST_ROOT=../../../
 npm install
-cd ..
-ln -s naheui/cli.js aheui
+ln -s "$DIR/cli.js" "$TEST_ROOT/aheui"

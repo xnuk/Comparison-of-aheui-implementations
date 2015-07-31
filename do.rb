@@ -15,9 +15,8 @@ json = { data: {} }
 data = json[:data]
 Dir.glob('test/*.sh{,.[0-9]}').sort.each do |path|
   _, user, repo, testnum = File.basename(path).match(/^([^.]+)\.(.+)\.sh(?:\.(\d))?$/).to_a
-  sh "git clone https://github.com/#{user}/#{repo} --depth=1 -b master"
-  Dir.chdir(repo) do
-    sh "sh ../#{path}"
+  Dir.chdir("impl/#{user}/#{repo}") do
+    sh "sh ../../../#{path}"
   end
   json_item = {}
   if testnum != nil
@@ -26,7 +25,7 @@ Dir.glob('test/*.sh{,.[0-9]}').sort.each do |path|
   end
   has_pre_script = File.exist?('aheui.pre.sh')
   has_post_script = File.exist?('aheui.post.sh')
-  Dir.glob("snippets/**/*.out") do |testpath|
+  Dir.glob("test/snippets/**/*.out") do |testpath|
     testpath = testpath.gsub(/\.out$/, '')
     inputpath = "#{testpath}.in"
     sh "sh ./aheui.pre.sh #{testpath}.aheui" if has_pre_script
@@ -59,7 +58,6 @@ Dir.glob('test/*.sh{,.[0-9]}').sort.each do |path|
     end
   end
   data["#{user}/#{repo}#{"/#{testnum}" unless testnum == nil}"] = json_item
-  rm_rf repo
   File.delete('aheui') if File.exist?('aheui') || File.symlink?('aheui')
   File.delete('aheui.pre.sh') if has_pre_script
   File.delete('aheui.post.sh') if has_post_script

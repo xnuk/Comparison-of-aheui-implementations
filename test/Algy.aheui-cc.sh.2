@@ -1,4 +1,6 @@
 # description pypy
+DIR="$(pwd -P)"
+TEST_ROOT=../../../
 pyenv global pypy-2.4.0
-echo 'pypy ./aheui-cc/ahcc.py -o ./aheui $1' > ../aheui.pre.sh
-echo 'rm ./aheui' > ../aheui.post.sh
+echo "pypy \"$DIR/ahcc.py\" -o ./aheui \$1" > "$TEST_ROOT/aheui.pre.sh"
+echo 'rm ./aheui' > "$TEST_ROOT/aheui.post.sh"
