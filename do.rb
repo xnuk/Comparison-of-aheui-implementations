@@ -3,10 +3,10 @@ require 'base64'
 require 'rake'
 require 'json'
 require 'time'
-require 'zlib'
+require 'xz'
 
-def deflate(x)
-  Base64.encode64 Zlib::Deflate.deflate(x)
+def compress(x)
+  Base64.encode64 XZ.compress(x)
 end
 
 Dir.chdir(File.dirname(__FILE__))
@@ -38,7 +38,7 @@ Dir.glob('test/*.sh{,.[0-9]}').sort.each do |path|
     if timestr.empty?
       puts "Terminated #{testname}"
       puts ""
-      puts deflate(output)
+      puts compress(output)
       puts ""
       json_item[testname] = true
     elsif File.exist?("#{testpath}.exitcode") and (expected_exitcode = File.read("#{testpath}.exitcode").to_i) != output_exitcode
@@ -47,9 +47,9 @@ Dir.glob('test/*.sh{,.[0-9]}').sort.each do |path|
     elsif (expected_output = File.read("#{testpath}.out").strip) != (output = output.encode('UTF-8', :invalid => :replace).strip)
       puts "Fail #{testname}"
       puts
-      puts deflate(output)
+      puts compress(output)
       puts "Expected>"
-      puts deflate(expected_output)
+      puts compress(expected_output)
       puts
       json_item[testname] = false
     else
