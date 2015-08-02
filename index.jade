@@ -7,17 +7,19 @@ table#comp
   caption Comparison table
   tr
     th Snippets
-    each _, i in data
+    each impl, i in data
       if i!='_'
         th
-          a(href="https://github.com/"+i)=i
+          a(href="https://github.com/"+i)=i.replace(/\/\d?$/, '')
+          if impl._!=null
+            |  (#{impl._})
   tr
     td &nbsp;
   each _, i in data['aheui/caheui']
     if i!='_'
       tr
         th
-          a(href="https://github.com/aheui/snippets/tree/master/"+i+".aheui")=i
+          a(href="https://github.com/aheui/snippets/tree/master/#{i}.aheui")=i
         each v, j in data
           if j!='_'
             if v[i]===false

@@ -13,14 +13,17 @@ Dir.chdir(File.dirname(__FILE__))
 
 json = { data: {} }
 data = json[:data]
-Dir.glob('test/*.sh').each do |path|
-  user, repo, _ = File.basename(path).split('.')
-  puts cmd = "git clone https://github.com/#{user}/#{repo} --depth=1 -b master"
-  `#{cmd}`
+Dir.glob('test/*.sh{,.[0-9]}').sort.each do |path|
+  _, user, repo, testnum = File.basename(path).match(/^([^.]+)\.(.+)\.sh(?:\.(\d))?$/).to_a
+  sh "git clone https://github.com/#{user}/#{repo} --depth=1 -b master"
   Dir.chdir(repo) do
     sh "sh ../#{path}"
   end
   json_item = {}
+  if testnum != nil
+    conf = File.read(path).strip.each_line.take_while{ |line| line.start_with? '#'}.map{ |line| line.strip.gsub(/^#\s*/, '') }
+    _, json_item['_'] = conf.select{ |line| line[/^description ./i] }[0].match(/^description (.+)$/).to_a
+  end
   has_pre_script = File.exist?('aheui.pre.sh')
   has_post_script = File.exist?('aheui.post.sh')
   Dir.glob("snippets/**/*.out") do |testpath|
@@ -31,32 +34,31 @@ Dir.glob('test/*.sh').each do |path|
     output_exitcode = $?.exitstatus
     sh "sh ./aheui.post.sh #{testpath}.aheui" if has_post_script
     timestr = File.read('time.tmp')
-    tp = testpath.gsub(/^snippets\//, '')
+    testname = testpath.gsub(/^snippets\//, '')
     if timestr.empty?
-      puts "Terminated #{tp}"
+      puts "Terminated #{testname}"
       puts ""
       puts deflate(output)
       puts ""
-      json_item[tp] = true
+      json_item[testname] = true
     elsif File.exist?("#{testpath}.exitcode") and (expected_exitcode = File.read("#{testpath}.exitcode").to_i) != output_exitcode
-      puts "Fail #{tp}: Expected exitcode was #{expected_exitcode}, but it returns #{output_exitcode}"
-      json_item[tp] = false
+      puts "Fail #{testname}: Expected exitcode was #{expected_exitcode}, but it returns #{output_exitcode}"
+      json_item[testname] = false
     elsif (expected_output = File.read("#{testpath}.out").strip) != (output = output.encode('UTF-8', :invalid => :replace).strip)
-      puts "Fail #{tp}"
-      puts ""
+      puts "Fail #{testname}"
+      puts
       puts deflate(output)
       puts "Expected>"
       puts deflate(expected_output)
-      puts ""
-      json_item[tp] = false
+      puts
+      json_item[testname] = false
     else
       time = timestr.lines[-1].split.map(&:to_f).reduce(&:+)
-      puts "Pass #{tp} #{time}s"
-      json_item[tp] = time
+      puts "Pass #{testname} #{time}s"
+      json_item[testname] = time
     end
   end
-  json_item['_'] = nil
-  data["#{user}/#{repo}"] = json_item
+  data["#{user}/#{repo}#{"/#{testnum}" unless testnum == nil}"] = json_item
   rm_rf repo
   File.delete('aheui') if File.exist?('aheui') || File.symlink?('aheui')
   File.delete('aheui.pre.sh') if has_pre_script
