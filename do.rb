@@ -6,7 +6,7 @@ require 'time'
 require 'xz'
 
 def compress(x)
-  Base64.encode64 XZ.compress(x)
+  Base64.encode64(XZ.compress(x))
 end
 
 Dir.chdir(File.dirname(__FILE__))
@@ -34,12 +34,12 @@ Dir.glob('test/*.sh{,.[0-9]}').sort.each do |path|
     output_exitcode = $?.exitstatus
     sh "sh ./aheui.post.sh #{testpath}.aheui" if has_post_script
     timestr = File.read('time.tmp')
-    testname = testpath.gsub(/^snippets\//, '')
+    testname = testpath.gsub(%r{^test/snippets/}, '')
     if timestr.empty?
       puts "Terminated #{testname}"
-      puts ""
+      puts
       puts compress(output)
-      puts ""
+      puts
       json_item[testname] = true
     elsif File.exist?("#{testpath}.exitcode") and (expected_exitcode = File.read("#{testpath}.exitcode").to_i) != output_exitcode
       puts "Fail #{testname}: Expected exitcode was #{expected_exitcode}, but it returns #{output_exitcode}"
