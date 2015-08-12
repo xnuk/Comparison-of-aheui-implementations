@@ -4,35 +4,32 @@ head
   title Comparison of Aheui implementations
   link(rel='stylesheet', href='./index.css', type='text/css')
 table#comp
-  caption Comparison table
+  caption
+    | Comparison table (Last tested on #[time(datetime=data._)= data._])
   tr
     th Snippets
     each impl, i in data
-      if i!='_'
+      if i != '_'
         th
-          - var user_repo=i.replace(/\/\d?$/, '')
-          a(href="https://github.com/"+user_repo)=user_repo
-          if impl._!=null
+          - var user_repo = i.replace(/\/\d?$/, '')
+          a(href='https://github.com/' + user_repo)= user_repo
+          if impl._ != null
             |  (#{impl._})
   tr
     td &nbsp;
   each _, i in data['aheui/caheui']
-    if i!='_'
+    if i != '_'
       tr
         th
-          a(href="https://github.com/aheui/snippets/tree/master/#{i}.aheui")=i
+          a(href='https://github.com/aheui/snippets/tree/master/#{i}.aheui')= i
         each v, j in data
-          if j!='_'
-            if v[i]===false
+          if j != '_'
+            if v[i] === false
               td.fail
-            else if v[i]===true
+            else if v[i] === true
               td.terminated
             else
-              td.pass=v[i].toString().replace(/(\.\d{3})\d+$/, '$1')+'s'
-
-footer
-  = "Last tested on "
-  time(datetime=data._)=data._
+              td.pass= v[i].toString().replace(/(\.\d{3})\d+$/, '$1') + 's'
 
 script.
   var a = document.querySelector('#comp tr')
@@ -40,13 +37,13 @@ script.
   window.onscroll = function () {
     var x = window.pageXOffset
     var y = window.pageYOffset
-    if(y > offset) {
-      a.style.top = "0px"
-      a.style.left = -x + "px"
-      a.style.position = "fixed"
+    if (y > offset) {
+      a.style.top = '0px'
+      a.style.left = -x + 'px'
+      a.style.position = 'fixed'
     } else {
-      a.style.position = "absolute"
-      a.style.top = ""
-      a.style.left = ""
+      a.style.position = 'absolute'
+      a.style.top = ''
+      a.style.left = ''
     }
   }
