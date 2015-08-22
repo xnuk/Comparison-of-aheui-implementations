@@ -1,3 +1,4 @@
+DIR="$(pwd -P)"
+TEST_ROOT=../../../
 gem build raheui.gemspec
-cd ..
-ln -s raheui/bin/raheui aheui
+ln -s "$DIR/bin/raheui" "$TEST_ROOT/aheui"

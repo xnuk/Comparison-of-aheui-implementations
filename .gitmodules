@@ -1,0 +1,24 @@
+[submodule "test/snippets"]
+	path = test/snippets
+	url = https://github.com/aheui/snippets.git
+[submodule "impl/aheui/caheui"]
+	path = impl/aheui/caheui
+	url = https://github.com/aheui/caheui.git
+[submodule "impl/aheui/naheui"]
+	path = impl/aheui/naheui
+	url = https://github.com/aheui/naheui.git
+[submodule "impl/aheui/pyaheui"]
+	path = impl/aheui/pyaheui
+	url = https://github.com/aheui/pyaheui.git
+[submodule "impl/Algy/aheui-cc"]
+	path = impl/Algy/aheui-cc
+	url = https://github.com/Algy/aheui-cc.git
+[submodule "impl/rakjin/aheui-perl"]
+	path = impl/rakjin/aheui-perl
+	url = https://github.com/rakjin/aheui-perl.git
+[submodule "impl/xnuk/haskell-aheui"]
+	path = impl/xnuk/haskell-aheui
+	url = https://github.com/xnuk/haskell-aheui.git
+[submodule "impl/yous/raheui"]
+	path = impl/yous/raheui
+	url = https://github.com/yous/raheui.git

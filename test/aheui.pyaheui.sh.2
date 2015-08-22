@@ -1,5 +1,7 @@
 # description pypy
+DIR="$(pwd -P)"
+TEST_ROOT=../../../
 pyenv global pypy-2.4.0
-echo '#!/bin/sh' > ../aheui
-echo 'pypy pyaheui/esotope-aheui $1' >> ../aheui
-chmod +x ../aheui
+echo '#!/bin/sh' > "$TEST_ROOT/aheui"
+echo "pypy \"$DIR/esotope-aheui\" $1" >> "$TEST_ROOT/aheui"
+chmod +x "$TEST_ROOT/aheui"

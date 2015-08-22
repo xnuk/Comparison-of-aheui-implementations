@@ -1,2 +1,4 @@
+DIR="$(pwd -P)"
+TEST_ROOT=../../../
 make
-mv ./aheui ../aheui
+ln -s "$DIR/aheui" "$TEST_ROOT/aheui"
