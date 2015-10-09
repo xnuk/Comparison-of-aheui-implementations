@@ -18,7 +18,7 @@ machine:
     - git config --global user.name "Xnuk Shuman"
 dependencies:
   pre:
-    - sudo apt-get install time perl -y
+    - sudo apt-get install time perl liblocal-lib-perl -y
     - echo y | cpan
 
     - gem install ruby-xz
