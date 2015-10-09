@@ -34,7 +34,7 @@ Dir.glob('test/*.sh{,.[0-9]}').sort.each do |path|
     output_exitcode = $?.exitstatus
     sh "sh ./aheui.post.sh #{testpath}.aheui" if has_post_script
     timestr = File.read('time.tmp')
-    testname = testpath.gsub(%r{^test/snippets/}, '')
+    testname = testpath.gsub(%r{^snippets/}, '')
     if timestr.empty?
       puts "Terminated #{testname}"
       puts
