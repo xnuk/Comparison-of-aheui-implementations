@@ -18,7 +18,8 @@ machine:
     - git config --global user.name "Xnuk Shuman"
 dependencies:
   pre:
-    - sudo apt-get install time perl liblocal-lib-perl -y
+    - pyenv global 2.7.10 pypy-2.5.0
+    - sudo apt-get install time perl liblocal-lib-perl mercurial -y
     - echo y | cpan
 
     - gem install ruby-xz
