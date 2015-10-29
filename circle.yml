@@ -6,19 +6,14 @@ general:
     ignore:
       - gh-pages
 machine:
-  ghc:
-    version: 7.10.1
   python:
-    version: 2.7.9
-  ruby:
-    version: 2.2.2
-  node:
-    version: iojs-v1.3.0
+    version: 2.7.10
   pre:
     - git config --global user.email "admin@xnu.kr"
     - git config --global user.name "Xnuk Shuman"
 dependencies:
   pre:
+    - pyenv global 2.7.10 pypy-2.5.0
     - sudo apt-get install time perl liblocal-lib-perl mercurial -y
     - echo y | cpan
 
