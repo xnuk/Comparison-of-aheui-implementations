@@ -2,6 +2,7 @@ general:
   branches:
     only:
       - master
+      - branch
     ignore:
       - gh-pages
 machine:
@@ -18,7 +19,7 @@ machine:
     - git config --global user.name "Xnuk Shuman"
 dependencies:
   pre:
-    - sudo apt-get install time perl liblocal-lib-perl -y
+    - sudo apt-get install time perl liblocal-lib-perl mercurial -y
     - echo y | cpan
 
     - gem install ruby-xz
@@ -31,22 +32,3 @@ test:
     - git clone https://github.com/aheui/snippets --depth=1 -b master
     - ./do
     - cat ./data.json
-deployment:
-  upload:
-    branch: master
-    commands:
-      - rm -rf snippets
-      - curl --get https://necolas.github.io/normalize.css/latest/normalize.css > ./normalize.css
-      - stylus -o ./index.o.css ./index.styl
-      - cat ./normalize.css ./index.o.css | cleancss -o ./index.css
-      - rm ./index.o.css
-      - rm ./normalize.css
-      - jade -O ./data.json -o . ./index.jade
-      - rm ./data.json
-      - git checkout --orphan gh-pages
-      - git reset
-      - git add index.html
-      - git add index.css
-      - git status
-      - git commit -m 'update'
-      - git push -f origin gh-pages
