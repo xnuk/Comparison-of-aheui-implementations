@@ -8,11 +8,11 @@ machine:
   ghc:
     version: 7.10.1
   python:
-    version: 2.7.9
+    version: 2.7.10
   ruby:
-    version: 2.2.2
+    version: 2.2.3
   node:
-    version: iojs-v1.3.0
+    version: iojs-v4.1.0
   pre:
     - git config --global user.email "admin@xnu.kr"
     - git config --global user.name "Xnuk Shuman"
