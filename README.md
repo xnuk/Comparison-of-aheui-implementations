@@ -37,7 +37,7 @@ http://xnuk.github.io/Comparison-of-aheui-implementations
 현재 circle ci에서 테스트를 전부 도는 데에 걸리는 시간은 **40분** 정도입니다. 직접 테스트를 돌리실 때 `test/` 폴더에서 테스트하고 싶은 구현체의 스크립트를 제외한 나머지 부분은 미리 제거하시는 게 좋습니다.
 
 테스트에 필요한 것들은 다음과 같습니다.
-- [`time(1)`](http://man7.org/linux/man-pages/man1/time.1.html). 반드시 `/usr/bin/time`에 위치하여야 합니다. 부득이하게 위치하지 못할 시 [직접 찾아서 수정해주세요](https://github.com/xnuk/Comparison-of-aheui-implementations/blob/master/do).
+- [`time(1)`](http://man7.org/linux/man-pages/man1/time.1.html). 반드시 `/usr/bin/time`에 위치하여야 합니다. 부득이하게 위치하지 못할 시 [직접 찾아서 수정해주세요](https://github.com/xnuk/Comparison-of-aheui-implementations/blob/master/do#L33).
 - ruby 2.2 이상 (아마도?)
 - gem
   - `ruby-xz`가 필요합니다. 설치해주세요.
@@ -51,9 +51,9 @@ git clone https://github.com/aheui/snippets --depth=1 -b master
 ```
 
 이렇게 하면 같은 폴더 안에 `data.json`이 생겼을 겁니다. 형식을 설명하자면:
-- `data["_"]`: 빌드가 완료된 시간입니다. ISO 8601 형태로 되어 있습니다.
+- `data["_"]`: 빌드가 완료된 시각입니다. ISO 8601 형태로 되어 있습니다.
 - `data["user/repo"]`: `user.repo.sh`의 실행 결과입니다. 테스트명을 키값으로 갖고 실행결과를 값으로 갖는 object입니다.
-- `data["user/repo/num"]`: `user.repo.sh.num`의 실행 결과입니다. 여기서 `num`은 숫자를 의미합니다. `_`를 제외한 테스트명을 키값으로 갖고 실행결과를 값으로 갖는 object입니다.
+- `data["user/repo/num"]`: `user.repo.sh.num`의 실행 결과입니다. 여기서 `num`은 음이 아닌 정수를 의미합니다. `_`를 제외한 테스트명을 키값으로 갖고 실행결과를 값으로 갖는 object입니다.
   - `data["user/repo/num"]["_"]` `user.repo.sh.num`의 `# description` 항목입니다. 값은 줄바꿈 문자 없는 string입니다.
 - 실행결과 값:
   - 숫자(`\d+(\.\d+)?`): 해당 테스트를 실행하는 데에 걸린 시간(초)입니다.
