@@ -6,13 +6,13 @@ general:
       - gh-pages
 machine:
   ghc:
-    version: 7.10.1
+    version: 7.10.2
   python:
     version: 2.7.10
   ruby:
     version: 2.2.3
   node:
-    version: 4.2.1
+    version: 5.1.0
   pre:
     - git config --global user.email "admin@xnu.kr"
     - git config --global user.name "Xnuk Shuman"
