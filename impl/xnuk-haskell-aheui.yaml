@@ -1,0 +1,7 @@
+repo: xnuk/haskell-aheui
+ref: bf471483ae137e91f4eaf71ec32bb07e36c83df9
+hash: v1
+
+steps:
+- uses: actions/setup-haskell@v1.1
+- run: ghc -O2 main.hs -o "$AHEUI_BIN"

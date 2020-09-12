@@ -1,0 +1,23 @@
+{
+	"compilerOptions": {
+		"baseUrl": ".",
+		"rootDir": ".",
+		"target": "esnext",
+		"sourceMap": false,
+		"allowJs": false,
+		"moduleResolution": "node",
+		"strict": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"noImplicitReturns": true,
+		"noFallthroughCasesInSwitch": true,
+		"forceConsistentCasingInFileNames": true,
+		"newLine": "lf",
+		"removeComments": false,
+		"esModuleInterop": true
+	},
+	"exclude": [
+		"./node_modules/"
+	]
+}
+

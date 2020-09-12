@@ -1,0 +1,104 @@
+{
+  "name": "compile-rev2",
+  "on": {
+    "push": {
+      "branches": [
+        "actions"
+      ],
+      "paths": [
+        ".github/workflows/benchmark.yaml"
+      ]
+    }
+  },
+  "jobs": {
+    "xnuk-haskell-aheui": {
+      "needs": [],
+      "env": {
+        "REPO": "xnuk/haskell-aheui",
+        "REF": "bf471483ae137e91f4eaf71ec32bb07e36c83df9"
+      },
+      "runs-on": "ubuntu-20.04",
+      "steps": [
+        {
+          "id": "aheui-path",
+          "run": "echo \"::set-output name=path::$HOME/aheui\""
+        },
+        {
+          "id": "cache",
+          "uses": "actions/cache@v2",
+          "with": {
+            "path": "${{ steps.aheui-path.outputs.path }}",
+            "key": "aheui-bin-v1-${{ env.REPO }}-${{ env.REF }}-${{ runner.os }}-v1"
+          }
+        },
+        {
+          "uses": "actions/checkout@v2",
+          "with": {
+            "repository": "${{ env.REPO }}",
+            "ref": "${{ env.REF }}"
+          },
+          "if": "steps.cache.outputs.cache-hit != 'true'",
+          "env": {
+            "AHEUI_BIN": "${{ steps.aheui-path.outputs.path }}"
+          }
+        },
+        {
+          "uses": "actions/setup-haskell@v1.1",
+          "if": "steps.cache.outputs.cache-hit != 'true'",
+          "env": {
+            "AHEUI_BIN": "${{ steps.aheui-path.outputs.path }}"
+          }
+        },
+        {
+          "run": "ghc -O2 main.hs -o \"$AHEUI_BIN\"",
+          "if": "steps.cache.outputs.cache-hit != 'true'",
+          "env": {
+            "AHEUI_BIN": "${{ steps.aheui-path.outputs.path }}"
+          }
+        }
+      ]
+    },
+    "test__xnuk-haskell-aheui": {
+      "needs": [
+        "xnuk-haskell-aheui"
+      ],
+      "env": {
+        "REPO": "xnuk/haskell-aheui",
+        "REF": "bf471483ae137e91f4eaf71ec32bb07e36c83df9"
+      },
+      "runs-on": "ubuntu-20.04",
+      "steps": [
+        {
+          "id": "aheui-path",
+          "run": "echo \"::set-output name=path::$HOME/aheui\""
+        },
+        {
+          "id": "cache",
+          "uses": "actions/cache@v2",
+          "with": {
+            "path": "${{ steps.aheui-path.outputs.path }}",
+            "key": "aheui-bin-v1-${{ env.REPO }}-${{ env.REF }}-${{ runner.os }}-v1"
+          }
+        },
+        {
+          "uses": "actions/checkout@v2",
+          "with": {
+            "repository": "aheui/snippets",
+            "ref": "ce34b1443a1c70b0cac1d8ed6304a65fee485082"
+          },
+          "if": "steps.cache.outputs.cache-hit == 'true'",
+          "env": {
+            "AHEUI_BIN": "${{ steps.aheui-path.outputs.path }}"
+          }
+        },
+        {
+          "run": "AHEUI=\"$AHEUI_BIN\" bash test.sh standard",
+          "if": "steps.cache.outputs.cache-hit == 'true'",
+          "env": {
+            "AHEUI_BIN": "${{ steps.aheui-path.outputs.path }}"
+          }
+        }
+      ]
+    }
+  }
+}
