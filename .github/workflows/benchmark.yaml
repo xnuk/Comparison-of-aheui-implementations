@@ -20,14 +20,13 @@
       "runs-on": "ubuntu-20.04",
       "steps": [
         {
-          "id": "aheui-path",
-          "run": "echo \"::set-output name=path::$HOME/aheui\""
+          "run": "echo \"::set-env name=AHEUI_BIN::$HOME/aheui\""
         },
         {
           "id": "cache",
           "uses": "actions/cache@v2",
           "with": {
-            "path": "${{ steps.aheui-path.outputs.path }}",
+            "path": "${{ env.AHEUI_BIN }}",
             "key": "aheui-bin-v1-${{ env.REPO }}-${{ env.REF }}-${{ runner.os }}-v1"
           }
         },
@@ -37,24 +36,15 @@
             "repository": "${{ env.REPO }}",
             "ref": "${{ env.REF }}"
           },
-          "if": "steps.cache.outputs.cache-hit != 'true'",
-          "env": {
-            "AHEUI_BIN": "${{ steps.aheui-path.outputs.path }}"
-          }
+          "if": "steps.cache.outputs.cache-hit != 'true'"
         },
         {
           "uses": "actions/setup-haskell@v1.1",
-          "if": "steps.cache.outputs.cache-hit != 'true'",
-          "env": {
-            "AHEUI_BIN": "${{ steps.aheui-path.outputs.path }}"
-          }
+          "if": "steps.cache.outputs.cache-hit != 'true'"
         },
         {
           "run": "ghc -O2 main.hs -o \"$AHEUI_BIN\"",
-          "if": "steps.cache.outputs.cache-hit != 'true'",
-          "env": {
-            "AHEUI_BIN": "${{ steps.aheui-path.outputs.path }}"
-          }
+          "if": "steps.cache.outputs.cache-hit != 'true'"
         }
       ]
     },
@@ -69,14 +59,13 @@
       "runs-on": "ubuntu-20.04",
       "steps": [
         {
-          "id": "aheui-path",
-          "run": "echo \"::set-output name=path::$HOME/aheui\""
+          "run": "echo \"::set-env name=AHEUI_BIN::$HOME/aheui\""
         },
         {
           "id": "cache",
           "uses": "actions/cache@v2",
           "with": {
-            "path": "${{ steps.aheui-path.outputs.path }}",
+            "path": "${{ env.AHEUI_BIN }}",
             "key": "aheui-bin-v1-${{ env.REPO }}-${{ env.REF }}-${{ runner.os }}-v1"
           }
         },
@@ -86,17 +75,11 @@
             "repository": "aheui/snippets",
             "ref": "ce34b1443a1c70b0cac1d8ed6304a65fee485082"
           },
-          "if": "steps.cache.outputs.cache-hit == 'true'",
-          "env": {
-            "AHEUI_BIN": "${{ steps.aheui-path.outputs.path }}"
-          }
+          "if": "steps.cache.outputs.cache-hit == 'true'"
         },
         {
           "run": "AHEUI=\"$AHEUI_BIN\" bash test.sh standard",
-          "if": "steps.cache.outputs.cache-hit == 'true'",
-          "env": {
-            "AHEUI_BIN": "${{ steps.aheui-path.outputs.path }}"
-          }
+          "if": "steps.cache.outputs.cache-hit == 'true'"
         }
       ]
     }

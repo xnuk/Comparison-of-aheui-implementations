@@ -60,16 +60,13 @@ const jobP = ({name, repo, ref, hash = ''}: JobParam) => (
 	env: { REPO: repo, REF: ref },
 	'runs-on': OS,
 	steps: [
-		{
-			id: 'aheui-path',
-			run: `echo "::set-output name=path::${AHEUI_BIN}"`
-		},
+		{ run: `echo "::set-env name=AHEUI_BIN::${AHEUI_BIN}"` },
 
 		{
 			id: 'cache',
 			uses: 'actions/cache@v2',
 			with: {
-				path: '${{ steps.aheui-path.outputs.path }}',
+				path: '${{ env.AHEUI_BIN }}',
 				key: [
 					'aheui-bin-v1',
 					'${{ env.REPO }}',
@@ -84,9 +81,6 @@ const jobP = ({name, repo, ref, hash = ''}: JobParam) => (
 			if: `steps.cache.outputs.cache-hit ${
 				type === 'compile' ? '!=' : '=='
 			} 'true'`,
-			env: Object.assign({
-				AHEUI_BIN: '${{ steps.aheui-path.outputs.path }}'
-			}, step.env || {})
 		}))
 	]
 }}) as const
