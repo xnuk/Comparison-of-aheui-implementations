@@ -70,16 +70,19 @@
           }
         },
         {
+          "name": "Is binary given?",
+          "run": "false",
+          "if": "steps.cache.outputs.cache-hit != 'true'"
+        },
+        {
           "uses": "actions/checkout@v2",
           "with": {
             "repository": "aheui/snippets",
             "ref": "ce34b1443a1c70b0cac1d8ed6304a65fee485082"
-          },
-          "if": "steps.cache.outputs.cache-hit == 'true'"
+          }
         },
         {
-          "run": "AHEUI=\"$AHEUI_BIN\" bash test.sh standard",
-          "if": "steps.cache.outputs.cache-hit == 'true'"
+          "run": "AHEUI=\"$AHEUI_BIN\" bash test.sh standard"
         }
       ]
     }

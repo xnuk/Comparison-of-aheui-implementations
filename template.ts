@@ -52,6 +52,9 @@ interface JobParam {
 	readonly ref: string
 	readonly hash?: string
 }
+
+const nonCacheHit = "steps.cache.outputs.cache-hit != 'true'"
+
 const jobP = ({name, repo, ref, hash = ''}: JobParam) => (
 	type: 'compile' | 'test',
 	steps: { [key: string]: unknown }[],
@@ -77,12 +80,19 @@ const jobP = ({name, repo, ref, hash = ''}: JobParam) => (
 			}
 		},
 
-		...steps.map(step => Object.assign({}, step, {
-			if: `steps.cache.outputs.cache-hit ${
-				type === 'compile' ? '!=' : '=='
-			} 'true'`,
+		type === 'test' ? {
+			name: 'Is binary given?',
+			run: 'false',
+			if: nonCacheHit
+		} : [],
+
+		type === 'test' ? steps : steps.map(step => ({
+			...step,
+			if: nonCacheHit + (
+				step.if == null ? '' : `&& (${step.if})`
+			)
 		}))
-	]
+	].flat()
 }}) as const
 
 const job = (
