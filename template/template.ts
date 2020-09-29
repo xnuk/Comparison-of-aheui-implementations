@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { readFile, readdir } from 'fs/promises'
 import { join } from 'path'
-import { safeLoad, JSON_SCHEMA } from 'js-yaml'
+import { safeLoad, FAILSAFE_SCHEMA } from 'js-yaml'
 
 const yamls = async (dir: string) => {
 	const paths = await readdir(
@@ -21,7 +21,7 @@ const yamls = async (dir: string) => {
 				)
 			}
 
-			const parsed = safeLoad(file, { schema: JSON_SCHEMA })
+			const parsed = safeLoad(file, { schema: FAILSAFE_SCHEMA })
 
 			if (!(parsed && typeof parsed === 'object')) return error()
 
