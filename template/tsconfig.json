@@ -14,7 +14,7 @@
 		"forceConsistentCasingInFileNames": true,
 		"newLine": "lf",
 		"removeComments": false,
-		"esModuleInterop": true
+		"esModuleInterop": true,
 	},
 	"exclude": [
 		"./node_modules/"
