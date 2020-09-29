@@ -63,7 +63,13 @@ const jobP = ({name, repo, ref, hash = ''}: JobParam) => (
 	env: { REPO: repo, REF: ref },
 	'runs-on': OS,
 	steps: [
-		{ run: `echo "::set-env name=AHEUI_PATH::${AHEUI_PATH}"` },
+		{
+			name: "Set AHEUI_PATH",
+			run: `
+				echo "::set-env name=AHEUI_PATH::${AHEUI_PATH}"
+				mkdir -p "${AHEUI_PATH}"
+			`.trim().replace(/\t/g, '')
+		},
 
 		{
 			id: 'cache',

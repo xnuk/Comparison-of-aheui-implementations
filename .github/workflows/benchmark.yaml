@@ -20,7 +20,8 @@
       "runs-on": "ubuntu-20.04",
       "steps": [
         {
-          "run": "echo \"::set-env name=AHEUI_PATH::$HOME/aheui\""
+          "name": "Set AHEUI_PATH",
+          "run": "echo \"::set-env name=AHEUI_PATH::$HOME/aheui\"\nmkdir -p \"$HOME/aheui\""
         },
         {
           "id": "cache",
@@ -59,7 +60,89 @@
       "runs-on": "ubuntu-20.04",
       "steps": [
         {
-          "run": "echo \"::set-env name=AHEUI_PATH::$HOME/aheui\""
+          "name": "Set AHEUI_PATH",
+          "run": "echo \"::set-env name=AHEUI_PATH::$HOME/aheui\"\nmkdir -p \"$HOME/aheui\""
+        },
+        {
+          "id": "cache",
+          "uses": "actions/cache@v2",
+          "with": {
+            "path": "${{ env.AHEUI_PATH }}",
+            "key": "aheui-path-v1-${{ env.REPO }}-${{ env.REF }}-${{ runner.os }}-v1"
+          }
+        },
+        {
+          "name": "Is binary given?",
+          "run": "false",
+          "if": "steps.cache.outputs.cache-hit != 'true'"
+        },
+        {
+          "uses": "actions/checkout@v2",
+          "with": {
+            "repository": "aheui/snippets",
+            "ref": "ce34b1443a1c70b0cac1d8ed6304a65fee485082"
+          }
+        },
+        {
+          "run": "AHEUI=\"$AHEUI_PATH/run-aheui\" bash test.sh standard"
+        }
+      ]
+    },
+    "yous-raheui": {
+      "needs": [],
+      "env": {
+        "REPO": "yous/raheui",
+        "REF": "8d4afec78b69dfb52c96426a07f03201fea353b4"
+      },
+      "runs-on": "ubuntu-20.04",
+      "steps": [
+        {
+          "name": "Set AHEUI_PATH",
+          "run": "echo \"::set-env name=AHEUI_PATH::$HOME/aheui\"\nmkdir -p \"$HOME/aheui\""
+        },
+        {
+          "id": "cache",
+          "uses": "actions/cache@v2",
+          "with": {
+            "path": "${{ env.AHEUI_PATH }}",
+            "key": "aheui-path-v1-${{ env.REPO }}-${{ env.REF }}-${{ runner.os }}-v1"
+          }
+        },
+        {
+          "uses": "actions/checkout@v2",
+          "with": {
+            "repository": "${{ env.REPO }}",
+            "ref": "${{ env.REF }}"
+          },
+          "if": "steps.cache.outputs.cache-hit != 'true'"
+        },
+        {
+          "uses": "actions/setup-ruby@v1",
+          "if": "steps.cache.outputs.cache-hit != 'true'"
+        },
+        {
+          "run": "gem build raheui.gemspec",
+          "if": "steps.cache.outputs.cache-hit != 'true'"
+        },
+        {
+          "run": "ln -s bin/raheui run-aheui && cp -R . \"$AHEUI_PATH\"",
+          "if": "steps.cache.outputs.cache-hit != 'true'"
+        }
+      ]
+    },
+    "test__yous-raheui": {
+      "needs": [
+        "yous-raheui"
+      ],
+      "env": {
+        "REPO": "yous/raheui",
+        "REF": "8d4afec78b69dfb52c96426a07f03201fea353b4"
+      },
+      "runs-on": "ubuntu-20.04",
+      "steps": [
+        {
+          "name": "Set AHEUI_PATH",
+          "run": "echo \"::set-env name=AHEUI_PATH::$HOME/aheui\"\nmkdir -p \"$HOME/aheui\""
         },
         {
           "id": "cache",
