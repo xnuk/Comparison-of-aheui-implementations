@@ -20,14 +20,14 @@
       "runs-on": "ubuntu-20.04",
       "steps": [
         {
-          "run": "echo \"::set-env name=AHEUI_BIN::$HOME/aheui\""
+          "run": "echo \"::set-env name=AHEUI_PATH::$HOME/aheui\""
         },
         {
           "id": "cache",
           "uses": "actions/cache@v2",
           "with": {
-            "path": "${{ env.AHEUI_BIN }}",
-            "key": "aheui-bin-v1-${{ env.REPO }}-${{ env.REF }}-${{ runner.os }}-v1"
+            "path": "${{ env.AHEUI_PATH }}",
+            "key": "aheui-path-v1-${{ env.REPO }}-${{ env.REF }}-${{ runner.os }}-v1"
           }
         },
         {
@@ -43,7 +43,7 @@
           "if": "steps.cache.outputs.cache-hit != 'true'"
         },
         {
-          "run": "ghc -O2 main.hs -o \"$AHEUI_BIN\"",
+          "run": "ghc -O2 main.hs -o \"$AHEUI_PATH\"/run-aheui",
           "if": "steps.cache.outputs.cache-hit != 'true'"
         }
       ]
@@ -59,14 +59,14 @@
       "runs-on": "ubuntu-20.04",
       "steps": [
         {
-          "run": "echo \"::set-env name=AHEUI_BIN::$HOME/aheui\""
+          "run": "echo \"::set-env name=AHEUI_PATH::$HOME/aheui\""
         },
         {
           "id": "cache",
           "uses": "actions/cache@v2",
           "with": {
-            "path": "${{ env.AHEUI_BIN }}",
-            "key": "aheui-bin-v1-${{ env.REPO }}-${{ env.REF }}-${{ runner.os }}-v1"
+            "path": "${{ env.AHEUI_PATH }}",
+            "key": "aheui-path-v1-${{ env.REPO }}-${{ env.REF }}-${{ runner.os }}-v1"
           }
         },
         {
@@ -82,7 +82,7 @@
           }
         },
         {
-          "run": "AHEUI=\"$AHEUI_BIN\" bash test.sh standard"
+          "run": "AHEUI=\"$AHEUI_PATH/run-aheui\" bash test.sh standard"
         }
       ]
     }

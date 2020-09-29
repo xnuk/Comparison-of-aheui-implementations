@@ -41,7 +41,7 @@ const yamls = async (dir: string) => {
 	)
 }
 
-const AHEUI_BIN = '$HOME/aheui'
+const AHEUI_PATH = '$HOME/aheui'
 const OS = 'ubuntu-20.04'
 const TEST_PREFIX = 'test__'
 const SNIPPETS_REF = 'ce34b1443a1c70b0cac1d8ed6304a65fee485082'
@@ -63,15 +63,15 @@ const jobP = ({name, repo, ref, hash = ''}: JobParam) => (
 	env: { REPO: repo, REF: ref },
 	'runs-on': OS,
 	steps: [
-		{ run: `echo "::set-env name=AHEUI_BIN::${AHEUI_BIN}"` },
+		{ run: `echo "::set-env name=AHEUI_PATH::${AHEUI_PATH}"` },
 
 		{
 			id: 'cache',
 			uses: 'actions/cache@v2',
 			with: {
-				path: '${{ env.AHEUI_BIN }}',
+				path: '${{ env.AHEUI_PATH }}',
 				key: [
-					'aheui-bin-v1',
+					'aheui-path-v1',
 					'${{ env.REPO }}',
 					'${{ env.REF }}',
 					'${{ runner.os }}',
@@ -119,7 +119,7 @@ const job = (
 					ref: SNIPPETS_REF,
 				}
 			},
-			{ run: 'AHEUI="$AHEUI_BIN" bash test.sh standard' }
+			{ run: 'AHEUI="$AHEUI_PATH/run-aheui" bash test.sh standard' }
 		])
 	] as const
 }
@@ -137,6 +137,8 @@ const result = async (dir: string) => ({
 	)
 })
 
-result('./impl/').then(result =>
+result(process.argv[2] || (() => {
+	throw new Error('impl path should be given')
+})()).then(result =>
 	console.log(JSON.stringify(result, null, 2))
 )

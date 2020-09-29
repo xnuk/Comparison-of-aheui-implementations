@@ -4,4 +4,4 @@ hash: v1
 
 steps:
 - uses: actions/setup-haskell@v1.1
-- run: ghc -O2 main.hs -o "$AHEUI_BIN"
+- run: ghc -O2 main.hs -o "$AHEUI_PATH"/run-aheui
