@@ -28,7 +28,7 @@ const yamls = async (dir: string) => {
 			const yaml = Object.assign(
 				{ name },
 				parsed,
-			) as JobParam & { steps: { [key: string]: unknown }[] }
+			) as JobParam & { steps: Steps }
 
 			const valid =
 				'repo' in yaml &&
@@ -43,8 +43,12 @@ const yamls = async (dir: string) => {
 
 const AHEUI_PATH = '$HOME/aheui'
 const OS = 'ubuntu-20.04'
-const TEST_PREFIX = 'test__'
 const SNIPPETS_REF = 'ce34b1443a1c70b0cac1d8ed6304a65fee485082'
+
+const getId = (type: 'compile' | 'test', name: string) => `${type}__${name}`
+
+const compile = getId.bind(null, 'compile')
+const test = getId.bind(null, 'test')
 
 interface JobParam {
 	readonly name: string
@@ -53,13 +57,31 @@ interface JobParam {
 	readonly hash?: string
 }
 
+interface Step {
+	id?: string
+	name?: string
+	if?: string
+}
+
+interface Use extends Step {
+	uses: string
+	with?: { [key: string]: string | number }
+}
+
+interface Run extends Step {
+	run: string
+	env?: { [key: string]: string }
+}
+
+type Steps = (Use | Run)[]
+
 const nonCacheHit = "steps.cache.outputs.cache-hit != 'true'"
 
 const jobP = ({name, repo, ref, hash = ''}: JobParam) => (
-	type: 'compile' | 'test',
-	steps: { [key: string]: unknown }[],
-) => ({ [type === 'compile' ? name : TEST_PREFIX + name]: {
-	needs: type === 'compile' ? [] : [name],
+	type: (name: string) => string,
+	steps: Steps,
+) => ({ [type(name)]: {
+	needs: type === compile ? [] : [compile(name)],
 	env: { REPO: repo, REF: ref },
 	'runs-on': OS,
 	steps: [
@@ -86,13 +108,13 @@ const jobP = ({name, repo, ref, hash = ''}: JobParam) => (
 			}
 		},
 
-		type === 'test' ? {
+		type === test ? {
 			name: 'Is binary given?',
 			run: 'false',
 			if: nonCacheHit
 		} : [],
 
-		type === 'test' ? steps : steps.map(step => ({
+		type === test ? steps : steps.map(step => ({
 			...step,
 			if: nonCacheHit + (
 				step.if == null ? '' : `&& (${step.if})`
@@ -102,11 +124,11 @@ const jobP = ({name, repo, ref, hash = ''}: JobParam) => (
 }}) as const
 
 const job = (
-	param: JobParam & { steps: { [key: string]: unknown }[] }
+	param: JobParam & { steps: Steps }
 ) => {
 	const task = jobP(param)
 	return [
-		task('compile', [
+		task(compile, [
 			{
 				uses: 'actions/checkout@v2',
 				with: {
@@ -117,7 +139,7 @@ const job = (
 			...param.steps
 		]),
 
-		task('test', [
+		task(test, [
 			{
 				uses: 'actions/checkout@v2',
 				with: {

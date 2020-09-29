@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import { version, definitions } from './workflow-v1.0.json'
 
 if (version !== 'workflow-v1.0') process.exit(1)
