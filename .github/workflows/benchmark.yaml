@@ -11,7 +11,7 @@
     }
   },
   "jobs": {
-    "xnuk-haskell-aheui": {
+    "compile__xnuk-haskell-aheui": {
       "needs": [],
       "env": {
         "REPO": "xnuk/haskell-aheui",
@@ -51,7 +51,7 @@
     },
     "test__xnuk-haskell-aheui": {
       "needs": [
-        "xnuk-haskell-aheui"
+        "compile__xnuk-haskell-aheui"
       ],
       "env": {
         "REPO": "xnuk/haskell-aheui",
@@ -88,7 +88,7 @@
         }
       ]
     },
-    "yous-raheui": {
+    "compile__yous-raheui": {
       "needs": [],
       "env": {
         "REPO": "yous/raheui",
@@ -132,7 +132,7 @@
     },
     "test__yous-raheui": {
       "needs": [
-        "yous-raheui"
+        "compile__yous-raheui"
       ],
       "env": {
         "REPO": "yous/raheui",
