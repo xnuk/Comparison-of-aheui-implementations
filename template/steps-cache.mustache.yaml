@@ -1,0 +1,6 @@
+[[> steps-aheui-path]]
+- uses: actions/cache@v2
+  with:
+    path: ${{ env.AHEUI_PATH }}
+    key: [[> cache-key]]
+

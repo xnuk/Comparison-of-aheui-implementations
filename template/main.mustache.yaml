@@ -1,0 +1,79 @@
+[[#meta]]
+aheui-path: $HOME/aheui
+os: ubuntu-20.04
+snippets-repo: aheui/snippets
+snippets-ref: ce34b1443a1c70b0cac1d8ed6304a65fee485082
+[[/meta]]
+
+name: compile-rev2
+on:
+  push:
+    branches:
+    - actions
+    paths:
+    - .github/workflows/benchmark.yaml
+
+jobs:
+  [[#files]]
+  check-cache__[[name]]:
+    runs-on: [[os]]
+    outputs:
+      cache-hit: ${{ steps.cache.outputs.cache-hit }}
+    steps:
+      [[> steps-cache-exists]]
+
+  compile__[[name]]:
+    runs-on: [[os]]
+    needs:
+    - check-cache__[[name]]
+
+    if: needs.check-cache__[[name]].outputs.cache-hit != 'true'
+
+    steps:
+      - run: echo "$NEEDS_CONTEXT"
+        env:
+          NEEDS_CONTEXT: ${{ toJson(needs) }}
+      [[> steps-cache]]
+      - run: mkdir -p "$AHEUI_PATH"
+      - uses: actions/checkout@v2
+        with:
+          repository: [[repo]]
+          ref: [[ref]]
+
+      [[#withIndent]]
+      [[#strip]]
+      [[steps]]
+      [[/strip]]
+      [[/withIndent]]
+
+  test__[[name]]:
+    runs-on: [[os]]
+    needs:
+    - compile__[[name]]
+    - check-cache__[[name]]
+
+    if: >-
+      needs.compile__[[name]].result == 'success' ||
+      needs.compile__[[name]].result == 'cancelled' &&
+        needs.check-cache__[[name]].outputs.cache-hit == 'true'
+
+    steps:
+      [[> steps-cache]]
+      - name: Getting aheui test cases
+        uses: actions/checkout@v2
+        with:
+          repository: [[snippets-repo]]
+          ref: [[snippets-ref]]
+
+      - run: AHEUI=$AHEUI_PATH/run-aheui bash test.sh standard
+
+  [[/files]]
+
+  result:
+    runs-on: [[os]]
+    needs:
+    [[#files]]
+    - test__[[name]]
+    [[/files]]
+    steps:
+    - run: 'true'

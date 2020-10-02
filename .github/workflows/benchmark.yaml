@@ -1,173 +1,196 @@
-{
-  "name": "compile-rev2",
-  "on": {
-    "push": {
-      "branches": [
-        "actions"
-      ],
-      "paths": [
-        ".github/workflows/benchmark.yaml"
-      ]
-    }
-  },
-  "jobs": {
-    "compile__xnuk-haskell-aheui": {
-      "needs": [],
-      "env": {
-        "REPO": "xnuk/haskell-aheui",
-        "REF": "bf471483ae137e91f4eaf71ec32bb07e36c83df9"
-      },
-      "runs-on": "ubuntu-20.04",
-      "steps": [
-        {
-          "name": "Set AHEUI_PATH",
-          "run": "echo \"::set-env name=AHEUI_PATH::$HOME/aheui\"\nmkdir -p \"$HOME/aheui\""
-        },
-        {
-          "id": "cache",
-          "uses": "actions/cache@v2",
-          "with": {
-            "path": "${{ env.AHEUI_PATH }}",
-            "key": "aheui-path-v1-${{ env.REPO }}-${{ env.REF }}-${{ runner.os }}-v1"
-          }
-        },
-        {
-          "uses": "actions/checkout@v2",
-          "with": {
-            "repository": "${{ env.REPO }}",
-            "ref": "${{ env.REF }}"
-          },
-          "if": "steps.cache.outputs.cache-hit != 'true'"
-        },
-        {
-          "uses": "actions/setup-haskell@v1.1",
-          "if": "steps.cache.outputs.cache-hit != 'true'"
-        },
-        {
-          "run": "ghc -O2 main.hs -o \"$AHEUI_PATH\"/run-aheui",
-          "if": "steps.cache.outputs.cache-hit != 'true'"
-        }
-      ]
-    },
-    "test__xnuk-haskell-aheui": {
-      "needs": [
-        "compile__xnuk-haskell-aheui"
-      ],
-      "env": {
-        "REPO": "xnuk/haskell-aheui",
-        "REF": "bf471483ae137e91f4eaf71ec32bb07e36c83df9"
-      },
-      "runs-on": "ubuntu-20.04",
-      "steps": [
-        {
-          "name": "Set AHEUI_PATH",
-          "run": "echo \"::set-env name=AHEUI_PATH::$HOME/aheui\"\nmkdir -p \"$HOME/aheui\""
-        },
-        {
-          "id": "cache",
-          "uses": "actions/cache@v2",
-          "with": {
-            "path": "${{ env.AHEUI_PATH }}",
-            "key": "aheui-path-v1-${{ env.REPO }}-${{ env.REF }}-${{ runner.os }}-v1"
-          }
-        },
-        {
-          "name": "Is binary given?",
-          "run": "false",
-          "if": "steps.cache.outputs.cache-hit != 'true'"
-        },
-        {
-          "uses": "actions/checkout@v2",
-          "with": {
-            "repository": "aheui/snippets",
-            "ref": "ce34b1443a1c70b0cac1d8ed6304a65fee485082"
-          }
-        },
-        {
-          "run": "AHEUI=\"$AHEUI_PATH/run-aheui\" bash test.sh standard"
-        }
-      ]
-    },
-    "compile__yous-raheui": {
-      "needs": [],
-      "env": {
-        "REPO": "yous/raheui",
-        "REF": "8d4afec78b69dfb52c96426a07f03201fea353b4"
-      },
-      "runs-on": "ubuntu-20.04",
-      "steps": [
-        {
-          "name": "Set AHEUI_PATH",
-          "run": "echo \"::set-env name=AHEUI_PATH::$HOME/aheui\"\nmkdir -p \"$HOME/aheui\""
-        },
-        {
-          "id": "cache",
-          "uses": "actions/cache@v2",
-          "with": {
-            "path": "${{ env.AHEUI_PATH }}",
-            "key": "aheui-path-v1-${{ env.REPO }}-${{ env.REF }}-${{ runner.os }}-v1"
-          }
-        },
-        {
-          "uses": "actions/checkout@v2",
-          "with": {
-            "repository": "${{ env.REPO }}",
-            "ref": "${{ env.REF }}"
-          },
-          "if": "steps.cache.outputs.cache-hit != 'true'"
-        },
-        {
-          "uses": "actions/setup-ruby@v1",
-          "if": "steps.cache.outputs.cache-hit != 'true'"
-        },
-        {
-          "run": "gem build raheui.gemspec",
-          "if": "steps.cache.outputs.cache-hit != 'true'"
-        },
-        {
-          "run": "ln -s bin/raheui run-aheui && cp -R . \"$AHEUI_PATH\"",
-          "if": "steps.cache.outputs.cache-hit != 'true'"
-        }
-      ]
-    },
-    "test__yous-raheui": {
-      "needs": [
-        "compile__yous-raheui"
-      ],
-      "env": {
-        "REPO": "yous/raheui",
-        "REF": "8d4afec78b69dfb52c96426a07f03201fea353b4"
-      },
-      "runs-on": "ubuntu-20.04",
-      "steps": [
-        {
-          "name": "Set AHEUI_PATH",
-          "run": "echo \"::set-env name=AHEUI_PATH::$HOME/aheui\"\nmkdir -p \"$HOME/aheui\""
-        },
-        {
-          "id": "cache",
-          "uses": "actions/cache@v2",
-          "with": {
-            "path": "${{ env.AHEUI_PATH }}",
-            "key": "aheui-path-v1-${{ env.REPO }}-${{ env.REF }}-${{ runner.os }}-v1"
-          }
-        },
-        {
-          "name": "Is binary given?",
-          "run": "false",
-          "if": "steps.cache.outputs.cache-hit != 'true'"
-        },
-        {
-          "uses": "actions/checkout@v2",
-          "with": {
-            "repository": "aheui/snippets",
-            "ref": "ce34b1443a1c70b0cac1d8ed6304a65fee485082"
-          }
-        },
-        {
-          "run": "AHEUI=\"$AHEUI_PATH/run-aheui\" bash test.sh standard"
-        }
-      ]
-    }
-  }
-}
+
+name: compile-rev2
+on:
+  push:
+    branches:
+    - actions
+    paths:
+    - .github/workflows/benchmark.yaml
+
+jobs:
+  check-cache__xnuk--haskell-aheui:
+    runs-on: ubuntu-20.04
+    outputs:
+      cache-hit: ${{ steps.cache.outputs.cache-hit }}
+    steps:
+      - name: Set AHEUI_PATH
+        run: |
+          echo "::set-env name=AHEUI_PATH::$HOME/aheui"
+          mkdir -p "$HOME/aheui"
+
+      - name: Get unix timestamp for good
+        run: printf '::set-env name=TIMESTAMP::%s' $(date +%s)
+
+      - uses: actions/cache@v2
+        with:
+          path: ${{ env.AHEUI_PATH }}
+          key: aheui-path-v5-xnuk/haskell-aheui-bf471483ae137e91f4eaf71ec32bb07e36c83df9-ubuntu-20.04-v1-${{ env.TIMESTAMP }}
+          restore-keys: aheui-path-v5-xnuk/haskell-aheui-bf471483ae137e91f4eaf71ec32bb07e36c83df9-ubuntu-20.04-v1
+
+      - id: cache
+        name: Cache hit?
+        run: |
+          if [ -x "$AHEUI_PATH/run-aheui" ] || [ -x "$AHEUI_PATH/compile-aheui" ]; then
+            echo Cache hit
+            echo ::set-output name=cache-hit::true
+          fi
+
+  compile__xnuk--haskell-aheui:
+    runs-on: ubuntu-20.04
+    needs:
+    - check-cache__xnuk--haskell-aheui
+
+    if: needs.check-cache__xnuk--haskell-aheui.outputs.cache-hit != 'true'
+
+    steps:
+      - run: echo "$NEEDS_CONTEXT"
+        env:
+          NEEDS_CONTEXT: ${{ toJson(needs) }}
+      - name: Set AHEUI_PATH
+        run: |
+          echo "::set-env name=AHEUI_PATH::$HOME/aheui"
+          mkdir -p "$HOME/aheui"
+
+      - uses: actions/cache@v2
+        with:
+          path: ${{ env.AHEUI_PATH }}
+          key: aheui-path-v5-xnuk/haskell-aheui-bf471483ae137e91f4eaf71ec32bb07e36c83df9-ubuntu-20.04-v1
+
+
+      - run: mkdir -p "$AHEUI_PATH"
+      - uses: actions/checkout@v2
+        with:
+          repository: xnuk/haskell-aheui
+          ref: bf471483ae137e91f4eaf71ec32bb07e36c83df9
+
+      - uses: actions/setup-haskell@v1.1
+      - run: ghc -O2 main.hs -o "$AHEUI_PATH"/run-aheui
+  test__xnuk--haskell-aheui:
+    runs-on: ubuntu-20.04
+    needs:
+    - compile__xnuk--haskell-aheui
+    - check-cache__xnuk--haskell-aheui
+
+    if: >-
+      needs.compile__xnuk--haskell-aheui.result == 'success' ||
+      needs.compile__xnuk--haskell-aheui.result == 'cancelled' &&
+        needs.check-cache__xnuk--haskell-aheui.outputs.cache-hit == 'true'
+
+    steps:
+      - name: Set AHEUI_PATH
+        run: |
+          echo "::set-env name=AHEUI_PATH::$HOME/aheui"
+          mkdir -p "$HOME/aheui"
+
+      - uses: actions/cache@v2
+        with:
+          path: ${{ env.AHEUI_PATH }}
+          key: aheui-path-v5-xnuk/haskell-aheui-bf471483ae137e91f4eaf71ec32bb07e36c83df9-ubuntu-20.04-v1
+
+
+      - name: Getting aheui test cases
+        uses: actions/checkout@v2
+        with:
+          repository: aheui/snippets
+          ref: ce34b1443a1c70b0cac1d8ed6304a65fee485082
+
+      - run: AHEUI=$AHEUI_PATH/run-aheui bash test.sh standard
+
+  check-cache__yous--raheui:
+    runs-on: ubuntu-20.04
+    outputs:
+      cache-hit: ${{ steps.cache.outputs.cache-hit }}
+    steps:
+      - name: Set AHEUI_PATH
+        run: |
+          echo "::set-env name=AHEUI_PATH::$HOME/aheui"
+          mkdir -p "$HOME/aheui"
+
+      - name: Get unix timestamp for good
+        run: printf '::set-env name=TIMESTAMP::%s' $(date +%s)
+
+      - uses: actions/cache@v2
+        with:
+          path: ${{ env.AHEUI_PATH }}
+          key: aheui-path-v5-yous/raheui-8d4afec78b69dfb52c96426a07f03201fea353b4-ubuntu-20.04-v1-${{ env.TIMESTAMP }}
+          restore-keys: aheui-path-v5-yous/raheui-8d4afec78b69dfb52c96426a07f03201fea353b4-ubuntu-20.04-v1
+
+      - id: cache
+        name: Cache hit?
+        run: |
+          if [ -x "$AHEUI_PATH/run-aheui" ] || [ -x "$AHEUI_PATH/compile-aheui" ]; then
+            echo Cache hit
+            echo ::set-output name=cache-hit::true
+          fi
+
+  compile__yous--raheui:
+    runs-on: ubuntu-20.04
+    needs:
+    - check-cache__yous--raheui
+
+    if: needs.check-cache__yous--raheui.outputs.cache-hit != 'true'
+
+    steps:
+      - run: echo "$NEEDS_CONTEXT"
+        env:
+          NEEDS_CONTEXT: ${{ toJson(needs) }}
+      - name: Set AHEUI_PATH
+        run: |
+          echo "::set-env name=AHEUI_PATH::$HOME/aheui"
+          mkdir -p "$HOME/aheui"
+
+      - uses: actions/cache@v2
+        with:
+          path: ${{ env.AHEUI_PATH }}
+          key: aheui-path-v5-yous/raheui-8d4afec78b69dfb52c96426a07f03201fea353b4-ubuntu-20.04-v1
+
+
+      - run: mkdir -p "$AHEUI_PATH"
+      - uses: actions/checkout@v2
+        with:
+          repository: yous/raheui
+          ref: 8d4afec78b69dfb52c96426a07f03201fea353b4
+
+      - uses: actions/setup-ruby@v1
+      - run: gem build raheui.gemspec
+      - run: ln -s bin/raheui run-aheui && cp -R . "$AHEUI_PATH"
+  test__yous--raheui:
+    runs-on: ubuntu-20.04
+    needs:
+    - compile__yous--raheui
+    - check-cache__yous--raheui
+
+    if: >-
+      needs.compile__yous--raheui.result == 'success' ||
+      needs.compile__yous--raheui.result == 'cancelled' &&
+        needs.check-cache__yous--raheui.outputs.cache-hit == 'true'
+
+    steps:
+      - name: Set AHEUI_PATH
+        run: |
+          echo "::set-env name=AHEUI_PATH::$HOME/aheui"
+          mkdir -p "$HOME/aheui"
+
+      - uses: actions/cache@v2
+        with:
+          path: ${{ env.AHEUI_PATH }}
+          key: aheui-path-v5-yous/raheui-8d4afec78b69dfb52c96426a07f03201fea353b4-ubuntu-20.04-v1
+
+
+      - name: Getting aheui test cases
+        uses: actions/checkout@v2
+        with:
+          repository: aheui/snippets
+          ref: ce34b1443a1c70b0cac1d8ed6304a65fee485082
+
+      - run: AHEUI=$AHEUI_PATH/run-aheui bash test.sh standard
+
+
+  result:
+    runs-on: ubuntu-20.04
+    needs:
+    - test__xnuk--haskell-aheui
+    - test__yous--raheui
+    steps:
+    - run: 'true'
+

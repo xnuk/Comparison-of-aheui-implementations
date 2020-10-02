@@ -1,7 +1,4 @@
-repo: yous/raheui
 ref: 8d4afec78b69dfb52c96426a07f03201fea353b4
-hash: v1
-
 steps:
 - uses: actions/setup-ruby@v1
 - run: gem build raheui.gemspec
