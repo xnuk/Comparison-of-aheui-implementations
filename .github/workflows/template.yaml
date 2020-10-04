@@ -1,0 +1,37 @@
+name: action generator
+
+on:
+  push:
+    branches:
+    - actions
+    paths:
+    - impl/**
+    - template/**
+
+jobs:
+  run:
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        token: ${{ secrets.PAT_WORKFLOW_TOKEN }}
+
+    - uses: actions/setup-node@v1
+      with:
+        node-version: 14.x
+
+    - name: update
+      run: |
+        cd template
+        npm ci
+        ./transpiler template.ts | node > ../.github/workflows/benchmark.yaml
+
+    - name: commit
+      run: |
+        git config user.name 'github action thx'
+        git config user.email 'spam@xnu.kr'
+        git config push.default simple
+
+        git add .github/workflows/
+        git commit -m 'Update benchmark workflows'
+        git push origin HEAD
