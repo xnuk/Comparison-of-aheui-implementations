@@ -3,6 +3,19 @@ aheui-path: $HOME/aheui
 os: ubuntu-20.04
 snippets-repo: aheui/snippets
 snippets-ref: ce34b1443a1c70b0cac1d8ed6304a65fee485082
+if-cache-miss: steps.cache.outputs.cache-hit != 'true'
+
+steps-cache: |
+  - name: Set AHEUI_PATH
+    run: |
+      echo "::set-env name=AHEUI_PATH::[[aheui-path]]"
+      mkdir -p "[[aheui-path]]"
+
+  - id: cache
+    uses: actions/cache@v2
+    with:
+      path: ${{ env.AHEUI_PATH }}
+      key: aheui-path-v5-[[repo]]-[[ref]]-[[os]]-[[revision]]
 [[/meta]]
 
 name: compile-rev2
@@ -15,57 +28,36 @@ on:
 
 jobs:
   [[#files]]
-  check-cache__[[name]]:
-    runs-on: [[os]]
-    outputs:
-      cache-hit: ${{ steps.cache.outputs.cache-hit }}
-    steps:
-      [[> steps-cache-exists]]
-
   compile__[[name]]:
     runs-on: [[os]]
-    needs:
-    - check-cache__[[name]]
-
-    if: needs.check-cache__[[name]].outputs.cache-hit != 'true'
 
     steps:
-      - run: echo "$NEEDS_CONTEXT"
-        env:
-          NEEDS_CONTEXT: ${{ toJson(needs) }}
-      [[> steps-cache]]
-      - run: mkdir -p "$AHEUI_PATH"
-      - uses: actions/checkout@v2
-        with:
-          repository: [[repo]]
-          ref: [[ref]]
-
-      [[#withIndent]]
-      [[#strip]]
-      [[steps]]
-      [[/strip]]
-      [[/withIndent]]
+    [[> steps-cache]]
+    - run: mkdir -p "$AHEUI_PATH"
+    - uses: actions/checkout@v2
+      with:
+        repository: [[repo]]
+        ref: [[ref]]
+    [[#steps]]
+    - [[#render]][[.]][[/render]]
+    [[/steps]]
 
   test__[[name]]:
     runs-on: [[os]]
     needs:
     - compile__[[name]]
-    - check-cache__[[name]]
-
-    if: >-
-      needs.compile__[[name]].result == 'success' ||
-      needs.compile__[[name]].result == 'cancelled' &&
-        needs.check-cache__[[name]].outputs.cache-hit == 'true'
 
     steps:
-      [[> steps-cache]]
-      - name: Getting aheui test cases
-        uses: actions/checkout@v2
-        with:
-          repository: [[snippets-repo]]
-          ref: [[snippets-ref]]
+    [[> steps-cache]]
+    - run: false
+      if: [[if-cache-miss]]
+    - name: Getting aheui test cases
+      uses: actions/checkout@v2
+      with:
+        repository: [[snippets-repo]]
+        ref: [[snippets-ref]]
 
-      - run: AHEUI=$AHEUI_PATH/run-aheui bash test.sh standard
+    - run: AHEUI=$AHEUI_PATH/run-aheui bash test.sh standard
 
   [[/files]]
 

@@ -1,5 +1,0 @@
-- name: Set AHEUI_PATH
-  run: |
-    echo "::set-env name=AHEUI_PATH::[[aheui-path]]"
-    mkdir -p "[[aheui-path]]"
-
