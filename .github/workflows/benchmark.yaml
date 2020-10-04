@@ -8,6 +8,56 @@ on:
     - .github/workflows/benchmark.yaml
 
 jobs:
+  compile__aheui--caheui:
+    runs-on: ubuntu-20.04
+
+    steps:
+    - name: Set AHEUI_PATH
+      run: |
+        echo "::set-env name=AHEUI_PATH::$HOME/aheui"
+        mkdir -p "$HOME/aheui"
+
+    - id: cache
+      uses: actions/cache@v2
+      with:
+        path: ${{ env.AHEUI_PATH }}
+        key: aheui-path-v5-aheui/caheui-c53987b0955870bc49d451acb623c582d4e6124e-ubuntu-20.04-v1
+    - run: mkdir -p "$AHEUI_PATH"
+      if: steps.cache.outputs.cache-hit != 'true'
+    - uses: actions/checkout@v2
+      if: steps.cache.outputs.cache-hit != 'true'
+      with:
+        repository: aheui/caheui
+        ref: c53987b0955870bc49d451acb623c582d4e6124e
+    - {"run":"make","if":"steps.cache.outputs.cache-hit != 'true'"}
+    - {"run":"mv ./aheui \"$AHEUI_PATH/run-aheui\"","if":"steps.cache.outputs.cache-hit != 'true'"}
+
+  test__aheui--caheui:
+    runs-on: ubuntu-20.04
+    needs:
+    - compile__aheui--caheui
+
+    steps:
+    - name: Set AHEUI_PATH
+      run: |
+        echo "::set-env name=AHEUI_PATH::$HOME/aheui"
+        mkdir -p "$HOME/aheui"
+
+    - id: cache
+      uses: actions/cache@v2
+      with:
+        path: ${{ env.AHEUI_PATH }}
+        key: aheui-path-v5-aheui/caheui-c53987b0955870bc49d451acb623c582d4e6124e-ubuntu-20.04-v1
+    - run: false
+      if: steps.cache.outputs.cache-hit != 'true'
+    - name: Getting aheui test cases
+      uses: actions/checkout@v2
+      with:
+        repository: aheui/snippets
+        ref: ce34b1443a1c70b0cac1d8ed6304a65fee485082
+
+    - run: AHEUI=$AHEUI_PATH/run-aheui bash test.sh standard
+
   compile__xnuk--haskell-aheui:
     runs-on: ubuntu-20.04
 
@@ -113,6 +163,7 @@ jobs:
   result:
     runs-on: ubuntu-20.04
     needs:
+    - test__aheui--caheui
     - test__xnuk--haskell-aheui
     - test__yous--raheui
     steps:
