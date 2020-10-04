@@ -1,0 +1,4 @@
+ref: c53987b0955870bc49d451acb623c582d4e6124e
+steps:
+- run: make
+- run: mv ./aheui "$AHEUI_PATH/run-aheui"
