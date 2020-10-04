@@ -34,7 +34,9 @@ jobs:
     steps:
     [[> steps-cache]]
     - run: mkdir -p "$AHEUI_PATH"
+      if: [[if-cache-miss]]
     - uses: actions/checkout@v2
+      if: [[if-cache-miss]]
       with:
         repository: [[repo]]
         ref: [[ref]]
