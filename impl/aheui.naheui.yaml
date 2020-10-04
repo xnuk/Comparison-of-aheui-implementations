@@ -1,0 +1,9 @@
+ref: deb8b6eefb17149fff3a9cfe05bb4c0e29810f10
+steps:
+- uses: actions/setup-node@v1
+  with:
+    node-version: 14.x
+- run: npm ci
+- run: |
+    rm -rf .git/
+    ln -s cli.js run-aheui && cp -R . "$AHEUI_PATH"
