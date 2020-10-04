@@ -58,6 +58,57 @@ jobs:
 
     - run: AHEUI=$AHEUI_PATH/run-aheui bash test.sh standard
 
+  compile__aheui--naheui:
+    runs-on: ubuntu-20.04
+
+    steps:
+    - name: Set AHEUI_PATH
+      run: |
+        echo "::set-env name=AHEUI_PATH::$HOME/aheui"
+        mkdir -p "$HOME/aheui"
+
+    - id: cache
+      uses: actions/cache@v2
+      with:
+        path: ${{ env.AHEUI_PATH }}
+        key: aheui-path-v5-aheui/naheui-deb8b6eefb17149fff3a9cfe05bb4c0e29810f10-ubuntu-20.04-v1
+    - run: mkdir -p "$AHEUI_PATH"
+      if: steps.cache.outputs.cache-hit != 'true'
+    - uses: actions/checkout@v2
+      if: steps.cache.outputs.cache-hit != 'true'
+      with:
+        repository: aheui/naheui
+        ref: deb8b6eefb17149fff3a9cfe05bb4c0e29810f10
+    - {"uses":"actions/setup-node@v1","with":{"node-version":"14.x"},"if":"steps.cache.outputs.cache-hit != 'true'"}
+    - {"run":"npm ci","if":"steps.cache.outputs.cache-hit != 'true'"}
+    - {"run":"rm -rf .git/\nln -s cli.js run-aheui && cp -R . \"$AHEUI_PATH\"\n","if":"steps.cache.outputs.cache-hit != 'true'"}
+
+  test__aheui--naheui:
+    runs-on: ubuntu-20.04
+    needs:
+    - compile__aheui--naheui
+
+    steps:
+    - name: Set AHEUI_PATH
+      run: |
+        echo "::set-env name=AHEUI_PATH::$HOME/aheui"
+        mkdir -p "$HOME/aheui"
+
+    - id: cache
+      uses: actions/cache@v2
+      with:
+        path: ${{ env.AHEUI_PATH }}
+        key: aheui-path-v5-aheui/naheui-deb8b6eefb17149fff3a9cfe05bb4c0e29810f10-ubuntu-20.04-v1
+    - run: false
+      if: steps.cache.outputs.cache-hit != 'true'
+    - name: Getting aheui test cases
+      uses: actions/checkout@v2
+      with:
+        repository: aheui/snippets
+        ref: ce34b1443a1c70b0cac1d8ed6304a65fee485082
+
+    - run: AHEUI=$AHEUI_PATH/run-aheui bash test.sh standard
+
   compile__xnuk--haskell-aheui:
     runs-on: ubuntu-20.04
 
@@ -164,6 +215,7 @@ jobs:
     runs-on: ubuntu-20.04
     needs:
     - test__aheui--caheui
+    - test__aheui--naheui
     - test__xnuk--haskell-aheui
     - test__yous--raheui
     steps:
