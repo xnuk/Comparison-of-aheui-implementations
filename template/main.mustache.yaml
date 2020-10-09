@@ -51,11 +51,11 @@ jobs:
 
     steps:
     [[> steps-cache]]
+    - run: false
+      if: [[if-cache-miss]]
     [[#deps]]
     - [[.]]
     [[/deps]]
-    - run: false
-      if: [[if-cache-miss]]
     - name: Getting aheui test cases
       uses: actions/checkout@v2
       with:
