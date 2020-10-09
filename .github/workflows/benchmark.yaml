@@ -8,6 +8,55 @@ on:
     - .github/workflows/benchmark.yaml
 
 jobs:
+  compile__Algy--aheui-cc:
+    runs-on: ubuntu-20.04
+
+    steps:
+    - name: Set AHEUI_PATH
+      run: |
+        echo "AHEUI_PATH=$HOME/aheui" >> $GITHUB_ENV
+        mkdir -p "$HOME/aheui"
+
+    - id: cache
+      uses: actions/cache@v2
+      with:
+        path: ${{ env.AHEUI_PATH }}
+        key: aheui-path-v6-Algy/aheui-cc-d6bdabd3a95c80e4b506badf674304a3c79cd4b1-ubuntu-20.04-beta-1
+    - uses: actions/checkout@v2
+      if: steps.cache.outputs.cache-hit != 'true'
+      with:
+        repository: Algy/aheui-cc
+        ref: d6bdabd3a95c80e4b506badf674304a3c79cd4b1
+    - {"uses":"actions/setup-python@v2","with":{"python-version":"pypy2"},"if":"steps.cache.outputs.cache-hit != 'true'"}
+    - {"run":"rm -rf .git/\ncat <<EOF > run-aheui\n#!/bin/sh\npypy ahcc.py -o runner $@ && ./runner\nEOF\nchmod +x run-aheui\ncp -R . \"$AHEUI_PATH\"\n","if":"steps.cache.outputs.cache-hit != 'true'"}
+
+  test__Algy--aheui-cc:
+    runs-on: ubuntu-20.04
+    needs:
+    - compile__Algy--aheui-cc
+
+    steps:
+    - name: Set AHEUI_PATH
+      run: |
+        echo "AHEUI_PATH=$HOME/aheui" >> $GITHUB_ENV
+        mkdir -p "$HOME/aheui"
+
+    - id: cache
+      uses: actions/cache@v2
+      with:
+        path: ${{ env.AHEUI_PATH }}
+        key: aheui-path-v6-Algy/aheui-cc-d6bdabd3a95c80e4b506badf674304a3c79cd4b1-ubuntu-20.04-beta-1
+    - run: false
+      if: steps.cache.outputs.cache-hit != 'true'
+    - {"uses":"actions/setup-python@v2","with":{"python-version":"pypy2"}}
+    - name: Getting aheui test cases
+      uses: actions/checkout@v2
+      with:
+        repository: aheui/snippets
+        ref: ce34b1443a1c70b0cac1d8ed6304a65fee485082
+
+    - run: AHEUI=$AHEUI_PATH/run-aheui bash test.sh standard
+
   compile__aheui--caheui:
     runs-on: ubuntu-20.04
 
@@ -208,6 +257,7 @@ jobs:
   result:
     runs-on: ubuntu-20.04
     needs:
+    - test__Algy--aheui-cc
     - test__aheui--caheui
     - test__aheui--naheui
     - test__xnuk--haskell-aheui
