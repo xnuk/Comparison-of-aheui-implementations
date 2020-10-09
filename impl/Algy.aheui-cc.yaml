@@ -1,5 +1,5 @@
 ref: d6bdabd3a95c80e4b506badf674304a3c79cd4b1
-revision: beta-2
+revision: beta-3
 
 deps:
 - uses: actions/setup-python@v2
@@ -11,7 +11,7 @@ steps:
     rm -rf .git/
     cat <<EOF > run-aheui
     #!/bin/sh
-    pypy "$AHEUI_PATH/ahcc.py" -o ./runner $@ && ./runner
+    pypy "$AHEUI_PATH/ahcc.py" -o ./runner $1 && cat | ./runner
     EOF
     chmod +x run-aheui
     cp -R . "$AHEUI_PATH"
