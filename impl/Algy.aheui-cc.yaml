@@ -1,0 +1,17 @@
+ref: d6bdabd3a95c80e4b506badf674304a3c79cd4b1
+revision: beta-1
+
+deps:
+- uses: actions/setup-python@v2
+  with:
+    python-version: pypy2
+
+steps:
+- run: |
+    rm -rf .git/
+    cat <<EOF > run-aheui
+    #!/bin/sh
+    pypy ahcc.py -o runner $@ && ./runner
+    EOF
+    chmod +x run-aheui
+    cp -R . "$AHEUI_PATH"
