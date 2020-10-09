@@ -99,6 +99,7 @@ jobs:
       with:
         path: ${{ env.AHEUI_PATH }}
         key: aheui-path-v5-aheui/naheui-470d4f107b26dad399b3f4f9eea241240fafe69a-ubuntu-20.04-v1
+    - {"uses":"actions/setup-node@v1","with":{"node-version":"14.x"}}
     - run: false
       if: steps.cache.outputs.cache-hit != 'true'
     - name: Getting aheui test cases
@@ -172,7 +173,7 @@ jobs:
       uses: actions/cache@v2
       with:
         path: ${{ env.AHEUI_PATH }}
-        key: aheui-path-v5-yous/raheui-8d4afec78b69dfb52c96426a07f03201fea353b4-ubuntu-20.04-v2
+        key: aheui-path-v5-yous/raheui-8d4afec78b69dfb52c96426a07f03201fea353b4-ubuntu-20.04-v1
     - run: mkdir -p "$AHEUI_PATH"
       if: steps.cache.outputs.cache-hit != 'true'
     - uses: actions/checkout@v2
@@ -199,7 +200,8 @@ jobs:
       uses: actions/cache@v2
       with:
         path: ${{ env.AHEUI_PATH }}
-        key: aheui-path-v5-yous/raheui-8d4afec78b69dfb52c96426a07f03201fea353b4-ubuntu-20.04-v2
+        key: aheui-path-v5-yous/raheui-8d4afec78b69dfb52c96426a07f03201fea353b4-ubuntu-20.04-v1
+    - {"uses":"actions/setup-ruby@v1"}
     - run: false
       if: steps.cache.outputs.cache-hit != 'true'
     - name: Getting aheui test cases

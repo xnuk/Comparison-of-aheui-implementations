@@ -77,7 +77,7 @@ const impls = (dir: string) =>
 		))
 			return Promise.reject(`${name} is not an valid format`)
 
-		const steps = data.steps.map((step: unknown) => {
+		const map = (steps: unknown[]) => steps.map((step: unknown) => {
 			if (!isObject(step)) return step
 			const when = typeof step.if === 'string' && step.if.trim() !== ''
 				? `(${step.if}) && ` : ''
@@ -87,13 +87,16 @@ const impls = (dir: string) =>
 			})
 		})
 
+		const deps = Array.isArray(data.deps) ? data.deps : []
+
 		return {
 			repo: name.replace(/\./g, '/'),
 			revision: 'v1',
 			name: name.replace(/\./g, '--'),
 			...data,
 
-			steps,
+			steps: map(deps.concat(data.steps)),
+			deps: deps.map(v => JSON.stringify(v)),
 		}
 	})
 

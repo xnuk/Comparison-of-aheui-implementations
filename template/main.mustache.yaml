@@ -15,7 +15,7 @@ steps-cache: |
     uses: actions/cache@v2
     with:
       path: ${{ env.AHEUI_PATH }}
-      key: aheui-path-v5-[[repo]]-[[ref]]-[[os]]-[[revision]]
+      key: aheui-path-v6-[[repo]]-[[ref]]-[[os]]-[[revision]]
 [[/meta]]
 
 name: compile-rev2
@@ -51,6 +51,9 @@ jobs:
 
     steps:
     [[> steps-cache]]
+    [[#deps]]
+    - [[.]]
+    [[/deps]]
     - run: false
       if: [[if-cache-miss]]
     - name: Getting aheui test cases
