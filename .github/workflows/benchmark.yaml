@@ -21,14 +21,14 @@ jobs:
       uses: actions/cache@v2
       with:
         path: ${{ env.AHEUI_PATH }}
-        key: aheui-path-v6-Algy/aheui-cc-d6bdabd3a95c80e4b506badf674304a3c79cd4b1-ubuntu-20.04-beta-1
+        key: aheui-path-v6-Algy/aheui-cc-d6bdabd3a95c80e4b506badf674304a3c79cd4b1-ubuntu-20.04-beta-2
     - uses: actions/checkout@v2
       if: steps.cache.outputs.cache-hit != 'true'
       with:
         repository: Algy/aheui-cc
         ref: d6bdabd3a95c80e4b506badf674304a3c79cd4b1
     - {"uses":"actions/setup-python@v2","with":{"python-version":"pypy2"},"if":"steps.cache.outputs.cache-hit != 'true'"}
-    - {"run":"rm -rf .git/\ncat <<EOF > run-aheui\n#!/bin/sh\npypy ahcc.py -o runner $@ && ./runner\nEOF\nchmod +x run-aheui\ncp -R . \"$AHEUI_PATH\"\n","if":"steps.cache.outputs.cache-hit != 'true'"}
+    - {"run":"rm -rf .git/\ncat <<EOF > run-aheui\n#!/bin/sh\npypy \"$AHEUI_PATH/ahcc.py\" -o ./runner $@ && ./runner\nEOF\nchmod +x run-aheui\ncp -R . \"$AHEUI_PATH\"\n","if":"steps.cache.outputs.cache-hit != 'true'"}
 
   test__Algy--aheui-cc:
     runs-on: ubuntu-20.04
@@ -45,7 +45,7 @@ jobs:
       uses: actions/cache@v2
       with:
         path: ${{ env.AHEUI_PATH }}
-        key: aheui-path-v6-Algy/aheui-cc-d6bdabd3a95c80e4b506badf674304a3c79cd4b1-ubuntu-20.04-beta-1
+        key: aheui-path-v6-Algy/aheui-cc-d6bdabd3a95c80e4b506badf674304a3c79cd4b1-ubuntu-20.04-beta-2
     - run: false
       if: steps.cache.outputs.cache-hit != 'true'
     - {"uses":"actions/setup-python@v2","with":{"python-version":"pypy2"}}
