@@ -8,7 +8,7 @@ if-cache-miss: steps.cache.outputs.cache-hit != 'true'
 steps-cache: |
   - name: Set AHEUI_PATH
     run: |
-      echo "::set-env name=AHEUI_PATH::[[aheui-path]]"
+      echo "AHEUI_PATH=[[aheui-path]]" >> $GITHUB_ENV
       mkdir -p "[[aheui-path]]"
 
   - id: cache
@@ -33,8 +33,6 @@ jobs:
 
     steps:
     [[> steps-cache]]
-    - run: mkdir -p "$AHEUI_PATH"
-      if: [[if-cache-miss]]
     - uses: actions/checkout@v2
       if: [[if-cache-miss]]
       with:
